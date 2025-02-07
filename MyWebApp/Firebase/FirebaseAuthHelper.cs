@@ -13,7 +13,7 @@ namespace MyWebApp.Firebase
             var auth = new FirebaseAuthClient(new FirebaseAuthConfig()
             {
                 ApiKey = firebaseApiKey,
-                AuthDomain = firebaseAppId,
+                AuthDomain = $"{firebaseAppId}.firebaseapp.com",
                 Providers = new FirebaseAuthProvider[]
                 {
                     new EmailProvider()

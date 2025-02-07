@@ -19,7 +19,7 @@ namespace MyWebApp.Controllers
             {
                 UserCredential userCredential = await FirebaseAuthHelper.setFirebaseAuthClient().SignInWithEmailAndPasswordAsync(email, password);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Condo");
             }
             catch
             {
