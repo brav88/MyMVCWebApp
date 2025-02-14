@@ -1,87 +1,161 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyWebApp.Models;
+using Newtonsoft.Json;
 
 namespace MyWebApp.Controllers
 {
-    public class CondoController : Controller
-    {
-        // GET: CondoController
-        public ActionResult Index()
-        {
-			CondominiumHelper condominiumHelper = new CondominiumHelper();
+	public class CondoController : Controller
+	{
+		public UserModel GetSessionInfo()
+		{
+			try
+			{
+				if (!string.IsNullOrEmpty(HttpContext.Session.GetString("userSession")))
+				{
+					UserModel? user = JsonConvert.DeserializeObject<UserModel>(HttpContext.Session.GetString("userSession"));
 
-			ViewBag.Condominium = condominiumHelper.getCondominiums().Result;
+					if (user.Type.Equals("root"))
+					{
+						return user;
+					}
+				}
 
-            return View();
-        }
+				return null;
+			}
+			catch
+			{
+				return null;
+			}
+		}
 
-        // GET: CondoController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+		public ActionResult Main()
+		{
+			UserModel? user = GetSessionInfo();
 
-        // GET: CondoController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+			if (user != null)
+			{
+				ViewBag.User = user;
+				return View();
+			}
+			
+			return RedirectToAction("Index", "Error");			
+		}
 
-        // POST: CondoController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+		// GET: CondoController
+		public ActionResult Index()
+		{
+			UserModel? user = GetSessionInfo();
 
-        // GET: CondoController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+			if (user != null)
+			{
+				ViewBag.User = user;
 
-        // POST: CondoController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+				CondominiumHelper condominiumHelper = new CondominiumHelper();
 
-        // GET: CondoController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+				ViewBag.Condominium = condominiumHelper.getCondominiums().Result;
 
-        // POST: CondoController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-    }
+				return View();
+			}
+
+			return RedirectToAction("Index", "Error");	
+		}
+
+		// GET: CondoController/Create
+		public ActionResult Create()
+		{
+			UserModel? user = GetSessionInfo();
+
+			if (user != null)
+			{
+				return View();
+			}
+
+			return RedirectToAction("Index", "Error");
+		}
+
+		public ActionResult CreateCondominium(string txtName, string txtAddress, int txtCount, string txtPhoto)
+		{
+			UserModel? user = GetSessionInfo();
+
+			if (user != null)
+			{
+				CondominiumHelper condominiumHelper = new CondominiumHelper();
+
+				bool result = condominiumHelper.saveCondominium(new Condominium
+				{
+					Name = txtName,
+					Address = txtAddress,
+					Count = txtCount,
+					Photo = txtPhoto
+				}).Result;
+
+				return RedirectToAction("Index");
+			}
+
+			return RedirectToAction("Index", "Error");
+		}			
+
+		// GET: CondoController/Details/5
+		public ActionResult Details(int id)
+		{
+			return View();
+		}
+
+		// POST: CondoController/Create
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Create(IFormCollection collection)
+		{
+			try
+			{
+				return RedirectToAction(nameof(Index));
+			}
+			catch
+			{
+				return View();
+			}
+		}
+
+		// GET: CondoController/Edit/5
+		public ActionResult Edit(int id)
+		{
+			return View();
+		}
+
+		// POST: CondoController/Edit/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Edit(int id, IFormCollection collection)
+		{
+			try
+			{
+				return RedirectToAction(nameof(Index));
+			}
+			catch
+			{
+				return View();
+			}
+		}
+
+		// GET: CondoController/Delete/5
+		public ActionResult Delete(int id)
+		{
+			return View();
+		}
+
+		// POST: CondoController/Delete/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Delete(int id, IFormCollection collection)
+		{
+			try
+			{
+				return RedirectToAction(nameof(Index));
+			}
+			catch
+			{
+				return View();
+			}
+		}
+	}
 }

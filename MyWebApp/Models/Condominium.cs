@@ -1,21 +1,22 @@
-﻿using Google.Cloud.Firestore;
+﻿using FirebaseAdmin;
+using Google.Cloud.Firestore;
 using MyWebApp.Firebase;
 
 namespace MyWebApp.Models
 {
-    public class Condominium
-    {
-        public String Id { get; set; }
-        public String Name { get; set; }
-        public String Address { get; set; }
-        public int Count { get; set; }
-        public String Photo{ get; set; }
-    }
+	public class Condominium
+	{
+		public String Id { get; set; }
+		public String Name { get; set; }
+		public String Address { get; set; }
+		public int Count { get; set; }
+		public String Photo { get; set; }
+	}
 
-    public class CondominiumHelper
-    {
-        public async Task<List<Condominium>> getCondominiums()
-        {
+	public class CondominiumHelper
+	{
+		public async Task<List<Condominium>> getCondominiums()
+		{
 			List<Condominium> condominiumList = new List<Condominium>();
 
 			Query query = FirestoreDb.Create(FirebaseAuthHelper.firebaseAppId).Collection("Condominium");
@@ -36,5 +37,40 @@ namespace MyWebApp.Models
 
 			return condominiumList;
 		}
-    }
+
+		public async Task<bool> saveCondominium(Condominium condominium)
+		{
+			try
+			{
+				//FirestoreDb bd = FirestoreDb.Create(FirebaseAuthHelper.firebaseAppId);
+
+				//CollectionReference coll = bd.Collection("Condominium");
+
+				//Dictionary<string, object> newCondo = new Dictionary<string, object>
+				//		{
+				//			{"Name", condominium.Name },
+				//			{"Address", condominium.Address },
+				//			{"Count", condominium.Count },
+				//			{"Photo", condominium.Photo },
+				//		};
+
+				//await coll.AddAsync(newCondo);
+
+				DocumentReference docRef = await FirestoreDb.Create(FirebaseAuthHelper.firebaseAppId).Collection("Condominium").AddAsync(
+					new Dictionary<string, object>
+						{
+							{"Name", condominium.Name },
+							{"Address", condominium.Address },
+							{"Count", condominium.Count },
+							{"Photo", condominium.Photo },
+						});
+
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+	}
 }
