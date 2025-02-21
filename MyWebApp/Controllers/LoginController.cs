@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyWebApp.Firebase;
+using MyWebApp.Misc;
 using MyWebApp.Models;
 using Newtonsoft.Json;
 
@@ -19,9 +20,7 @@ namespace MyWebApp.Controllers
 		{
 			try
 			{
-				UserHelper userHelper = new UserHelper();
-
-				//userHelper.postUserWithEmailAndPassword("jjtrejos@mycompany.com", "Admin$1234", "Juan Jose Trejos", "owner");
+				UserHelper userHelper = new UserHelper();				
 
 				UserCredential userCredential = await FirebaseAuthHelper.setFirebaseAuthClient().SignInWithEmailAndPasswordAsync(email, password);
 				UserModel user = await userHelper.getUserInfo(email);

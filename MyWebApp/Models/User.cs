@@ -1,6 +1,7 @@
 ﻿using Firebase.Auth;
 using Google.Cloud.Firestore;
 using MyWebApp.Firebase;
+using MyWebApp.Misc;
 
 namespace MyWebApp.Models
 {
@@ -42,6 +43,8 @@ namespace MyWebApp.Models
 							{"name", displayName },
 							{"type", type},							
 						});
+
+			EmailHelper.SendEmail(email, displayName, password);
 		}
 
 	}

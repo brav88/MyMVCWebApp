@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MyWebApp.Misc;
+using MyWebApp.Models;
+using System.Text;
 
 namespace MyWebApp.Controllers
 {
@@ -18,10 +21,24 @@ namespace MyWebApp.Controllers
 		}
 
 		// GET: ProfileController/Create
-		public ActionResult Create()
+		public ActionResult CreateOwner(string txtEmail, string txtName, string selCondo, string selCondoNumber)
 		{
-			return View();
+			try
+			{				
+				UserHelper userHelper = new UserHelper();
+				userHelper.postUserWithEmailAndPassword(txtEmail, AppHelper.CreatePassword(), txtName, "owner");
+
+				RedirectToAction("Index", "Profile");
+			}
+			catch
+			{
+				return RedirectToAction("Index", "Error");
+			}
+
+			return Ok();
 		}
+
+		
 
 		// POST: ProfileController/Create
 		[HttpPost]

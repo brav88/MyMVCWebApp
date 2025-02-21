@@ -5,10 +5,10 @@ namespace MyWebApp.Firebase
 {
     public static class FirebaseAuthHelper
     {
-        public const string firebaseAppId = "";
-        public const string firebaseApiKey = "";
+		public const string firebaseAppId = "";
+		public const string firebaseApiKey = "";
 
-        public static FirebaseAuthClient setFirebaseAuthClient()
+		public static FirebaseAuthClient setFirebaseAuthClient()
         {
             var auth = new FirebaseAuthClient(new FirebaseAuthConfig()
             {
