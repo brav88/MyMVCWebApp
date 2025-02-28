@@ -4,7 +4,7 @@
 
 
 <div class="container mt-4">
-	<h2>Owner Main Page - Welcome @ViewBag.User.Name</h2>	
+	<h2>Owner Main Page - Welcome @ViewBag.User.Name</h2>
 	<hr />
 	<div class="row justify-content-center">
 		<div class="col-md-4">
@@ -22,6 +22,17 @@
 				<a asp-action="Index" asp-controller="Condo" class="text-center mb-4">Easy Pass</a>
 			</div>
 		</div>
+
+	</div>
+	<div class="row justify-content-center">
+		@foreach (var @propertie in @ViewBag.User.Properties)
+		{
+			<div class="col-md-4">
+				<div class="card shadow-lg p-4">
+					<label class="text-center mb-4">@propertie.CondoName</label>
+				</div>
+			</div>
+		}
 	</div>
 </div>
 

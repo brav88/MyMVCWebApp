@@ -13,9 +13,9 @@ namespace MyWebApp.Models
 		public String Photo { get; set; }
 	}
 
-	public class CondominiumHelper
+	public static class CondominiumHelper
 	{
-		public async Task<List<Condominium>> getCondominiums()
+		public static async Task<List<Condominium>> getCondominiums()
 		{
 			List<Condominium> condominiumList = new List<Condominium>();
 
@@ -38,24 +38,10 @@ namespace MyWebApp.Models
 			return condominiumList;
 		}
 
-		public async Task<bool> saveCondominium(Condominium condominium)
+		public static async Task<bool> saveCondominium(Condominium condominium)
 		{
 			try
 			{
-				//FirestoreDb bd = FirestoreDb.Create(FirebaseAuthHelper.firebaseAppId);
-
-				//CollectionReference coll = bd.Collection("Condominium");
-
-				//Dictionary<string, object> newCondo = new Dictionary<string, object>
-				//		{
-				//			{"Name", condominium.Name },
-				//			{"Address", condominium.Address },
-				//			{"Count", condominium.Count },
-				//			{"Photo", condominium.Photo },
-				//		};
-
-				//await coll.AddAsync(newCondo);
-
 				DocumentReference docRef = await FirestoreDb.Create(FirebaseAuthHelper.firebaseAppId).Collection("Condominium").AddAsync(
 					new Dictionary<string, object>
 						{

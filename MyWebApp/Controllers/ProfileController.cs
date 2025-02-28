@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyWebApp.Misc;
 using MyWebApp.Models;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace MyWebApp.Controllers
@@ -11,7 +12,18 @@ namespace MyWebApp.Controllers
 		// GET: ProfileController
 		public ActionResult Index()
 		{
+			List<Condominium> condoList = CondominiumHelper.getCondominiums().Result;
+
+			ViewBag.CondoList = condoList;
+
 			return View();
+		}
+
+		public ActionResult SetCount(int count)
+		{		
+			ViewBag.Count = count;
+
+			return View("Index");
 		}
 
 		// GET: ProfileController/Details/5
@@ -21,21 +33,19 @@ namespace MyWebApp.Controllers
 		}
 
 		// GET: ProfileController/Create
-		public ActionResult CreateOwner(string txtEmail, string txtName, string selCondo, string selCondoNumber)
+		public ActionResult CreateOwner(string txtEmail, string txtName, string selCondo, int selCondoNumber)
 		{
 			try
 			{				
 				UserHelper userHelper = new UserHelper();
-				userHelper.postUserWithEmailAndPassword(txtEmail, AppHelper.CreatePassword(), txtName, "owner");
+				userHelper.postUserWithEmailAndPassword(txtEmail, AppHelper.CreatePassword(), txtName, "owner", selCondo, selCondoNumber);
 
-				RedirectToAction("Index", "Profile");
+				return RedirectToAction("Index", "Profile");
 			}
 			catch
 			{
 				return RedirectToAction("Index", "Error");
-			}
-
-			return Ok();
+			}			
 		}
 
 		

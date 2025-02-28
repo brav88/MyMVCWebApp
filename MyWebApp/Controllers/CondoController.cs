@@ -50,9 +50,11 @@ namespace MyWebApp.Controllers
 			{
 				ViewBag.User = user;
 
-				CondominiumHelper condominiumHelper = new CondominiumHelper();
+				List<Condominium> condoList = CondominiumHelper.getCondominiums().Result;
 
-				ViewBag.Condominium = condominiumHelper.getCondominiums().Result;
+				ViewBag.Condominium = condoList;
+
+				HttpContext.Session.SetString("condoList", JsonConvert.SerializeObject(condoList));
 
 				return View();
 			}
@@ -79,9 +81,7 @@ namespace MyWebApp.Controllers
 
 			if (user != null)
 			{
-				CondominiumHelper condominiumHelper = new CondominiumHelper();
-
-				bool result = condominiumHelper.saveCondominium(new Condominium
+				bool result = CondominiumHelper.saveCondominium(new Condominium
 				{
 					Name = txtName,
 					Address = txtAddress,

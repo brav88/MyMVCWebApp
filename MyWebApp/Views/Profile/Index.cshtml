@@ -29,28 +29,43 @@
 							<div class="mb-3">
 								<select id="selCondo" name="selCondo" class="form-select" aria-label="Select the condominium">
 									<option selected>Select the condominium</option>
-									<option value="8ElxhZtQ8qFfU1oaIAAS">Condominio Villanea</option>
-									<option value="rgdpy68B0wG27wQ2M3r0">Condominio Altavista</option>
-									<option value="tPcUFX1kwWsE9INBg2ct">Condominio Natura</option>
+
+									@foreach (var condo in @ViewBag.CondoList)
+									{
+										<option value="@condo.Name" data-count="@condo.Count">@condo.Name</option>
+									}
 								</select>
 							</div>
 							<div class="mb-3">
 								<select id="selCondoNumber" name="selCondoNumber" class="form-select" aria-label="Select the condo number">
-									<option selected>Select the condo number</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
+									<option selected>Select the condo number</option>	
+									
 								</select>
 							</div>
+							<script type="text/javascript">
+								document.getElementById("selCondo").addEventListener("change", function () {
+									var selectedOption = this.options[this.selectedIndex];
+									var maxCount = selectedOption.getAttribute("data-count");
+									var selCondoNumber = document.getElementById("selCondoNumber");
+									selCondoNumber.innerHTML = '<option selected>Select the condo number</option>';
+
+									if (maxCount) {
+										for (var i = 1; i <= maxCount; i++) {
+											var option = document.createElement("option");
+											option.value = i;
+											option.textContent = i;
+											selCondoNumber.appendChild(option);
+										}
+									}
+								});
+							</script>
 							<hr />
 							<button type="submit" class="btn btn-primary w-100">Register</button>
-						</form>
+						</form>					
 					</div>
 				</div>
 			</div>
-
-		</div>
+		</div>		
 		<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">Hola</div>
 	</div>
 </div>

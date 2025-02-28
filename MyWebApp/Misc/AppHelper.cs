@@ -26,13 +26,13 @@ namespace MyWebApp.Misc
 
 	public static class EmailHelper
 	{
-		public static void SendEmail(string email, string displayName, string pwd)
+		public static void SendEmail(string email, string displayName, string pwd, string selCondo, int selCondoNumber)
 		{
-			//string sender = "brav850@gmail.com";
-			//string senderPwd = "uuxn chws incl ssjj";
+			string sender = "brav850@gmail.com";
+			string senderPwd = "uuxn chws incl ssjj";
 
-			string sender = "";
-			string senderPwd = "";
+			//string sender = "";
+			//string senderPwd = "";
 
 			using (MailMessage mm = new MailMessage(sender, email))
 			{
@@ -44,6 +44,8 @@ namespace MyWebApp.Misc
 					string body = sr.ReadToEnd().Replace("{usuario}", displayName);
 					body = body.Replace("{email}", email);
 					body = body.Replace("{password}", pwd);
+					body = body.Replace("{condominio}", selCondo);
+					body = body.Replace("{numero_casa}", selCondoNumber.ToString());
 					mm.Body = body;
 				}
 
