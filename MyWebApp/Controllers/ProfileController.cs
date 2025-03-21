@@ -4,26 +4,47 @@ using MyWebApp.Misc;
 using MyWebApp.Models;
 using Newtonsoft.Json;
 using System.Text;
+using System.Xml.Linq;
 
 namespace MyWebApp.Controllers
 {
 	public class ProfileController : Controller
 	{
-		// GET: ProfileController
-		public ActionResult Index()
+		public UserModel GetSessionInfo()
 		{
-			List<Condominium> condoList = CondominiumHelper.getCondominiums().Result;
+			try
+			{
+				if (!string.IsNullOrEmpty(HttpContext.Session.GetString("userSession")))
+				{
+					UserModel? user = JsonConvert.DeserializeObject<UserModel>(HttpContext.Session.GetString("userSession"));
 
-			ViewBag.CondoList = condoList;
+					if (user.Type.Equals("root"))
+					{
+						return user;
+					}
+				}
 
-			return View();
+				return null;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
-		public ActionResult SetCount(int count)
-		{		
-			ViewBag.Count = count;
+		public ActionResult Index()
+		{
+			UserModel? user = GetSessionInfo();
 
-			return View("Index");
+			if (user != null)
+			{
+				ViewBag.CondoList = CondominiumHelper.getCondominiums().Result;
+				ViewBag.OwnerList = UserHelper.getOwners().Result;
+
+				return View();
+			}
+
+			return RedirectToAction("Index", "Error");
 		}
 
 		// GET: ProfileController/Details/5
@@ -32,25 +53,48 @@ namespace MyWebApp.Controllers
 			return View();
 		}
 
-		// GET: ProfileController/Create
 		public ActionResult CreateOwner(string txtEmail, string txtName, string selCondo, int selCondoNumber)
 		{
-			try
-			{				
-				UserHelper userHelper = new UserHelper();
-				userHelper.postUserWithEmailAndPassword(txtEmail, AppHelper.CreatePassword(), txtName, "owner", selCondo, selCondoNumber);
+			UserModel? user = GetSessionInfo();
 
-				return RedirectToAction("Index", "Profile");
-			}
-			catch
+			if (user != null)
 			{
-				return RedirectToAction("Index", "Error");
-			}			
+				try
+				{
+					UserHelper.postUserWithEmailAndPassword(txtEmail, AppHelper.CreatePassword(), txtName, "owner", selCondo, selCondoNumber);
+
+					return RedirectToAction("Index", "Profile");
+				}
+				catch
+				{
+					return RedirectToAction("Index", "Error");
+				}
+			}
+
+			return RedirectToAction("Index", "Error");
 		}
 
-		
+		public ActionResult EditOwner(string txtUuid, string txtEmail, string txtName, string selCondo, int selCondoNumber)
+		{
+			UserModel? user = GetSessionInfo();
 
-		// POST: ProfileController/Create
+			if (user != null)
+			{
+				try
+				{
+					UserHelper.editOwner(txtUuid, txtEmail, txtName, selCondo, selCondoNumber);
+
+					return RedirectToAction("Index", "Profile");
+				}
+				catch
+				{
+					return RedirectToAction("Index", "Error");
+				}
+			}
+
+			return RedirectToAction("Index", "Error");
+		}
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Create(IFormCollection collection)
@@ -65,10 +109,19 @@ namespace MyWebApp.Controllers
 			}
 		}
 
-		// GET: ProfileController/Edit/5
-		public ActionResult Edit(int id)
+		public ActionResult Edit(string id)
 		{
-			return View();
+			UserModel? user = GetSessionInfo();
+
+			if (user != null)
+			{
+				ViewBag.CondoList = CondominiumHelper.getCondominiums().Result;
+				ViewBag.Owner = UserHelper.getUserInfo(id).Result;
+
+				return View();
+			}
+
+			return RedirectToAction("Index", "Error");
 		}
 
 		// POST: ProfileController/Edit/5

@@ -20,10 +20,8 @@ namespace MyWebApp.Controllers
 		{
 			try
 			{
-				UserHelper userHelper = new UserHelper();
-
 				UserCredential userCredential = await FirebaseAuthHelper.setFirebaseAuthClient().SignInWithEmailAndPasswordAsync(email, password);
-				UserModel user = await userHelper.getUserInfo(email);
+				UserModel user = await UserHelper.getUserInfo(email);
 
 				HttpContext.Session.SetString("userSession", JsonConvert.SerializeObject(user));
 
