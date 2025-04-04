@@ -140,24 +140,25 @@ namespace MyWebApp.Controllers
 		}
 
 		// GET: ProfileController/Delete/5
-		public ActionResult Delete(int id)
+		public ActionResult Delete(IFormCollection form)
 		{
-			return View();
-		}
+			UserModel? user = GetSessionInfo();
 
-		// POST: ProfileController/Delete/5
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Delete(int id, IFormCollection collection)
-		{
-			try
+			if (user != null)
 			{
-				return RedirectToAction(nameof(Index));
+				try
+				{
+					UserHelper.RemoveCondoFromUser(form["txtUuid"].ToString(), form["selCondo"].ToString(), Convert.ToInt16(form["selCondoNumber"]));
+
+					return RedirectToAction("Index", "Profile");
+				}
+				catch
+				{
+					return RedirectToAction("Index", "Error");
+				}
 			}
-			catch
-			{
-				return View();
-			}
+
+			return RedirectToAction("Index", "Error");
 		}
 	}
 }

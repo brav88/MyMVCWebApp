@@ -1,6 +1,8 @@
 ﻿using System.Net.Mail;
 using System.Net;
 using System.Text;
+using QRCoder;
+using System.Drawing;
 
 namespace MyWebApp.Misc
 {
@@ -40,7 +42,7 @@ namespace MyWebApp.Misc
 				mm.IsBodyHtml = true;
 
 				using (var sr = new StreamReader("wwwroot/templates/welcome.html"))
-				{					
+				{
 					string body = sr.ReadToEnd().Replace("{usuario}", displayName);
 					body = body.Replace("{email}", email);
 					body = body.Replace("{password}", pwd);
@@ -56,8 +58,29 @@ namespace MyWebApp.Misc
 				smtp.UseDefaultCredentials = false;
 				smtp.Credentials = NetworkCred;
 				smtp.Port = 587;
-				smtp.Send(mm);				
+				smtp.Send(mm);
 			}
+		}
+	}
+
+	public static class QRGenerator
+	{
+		public static string GenerateQRCode()
+		{
+			string content = AppHelper.CreatePassword();
+			string path = "wwwroot/qr/" + content + ".png";
+
+			QRCodeGenerator qrGenerator = new QRCodeGenerator();
+
+			QRCodeData data = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
+
+			QRCode qrCode = new QRCode(data);
+
+			Bitmap bit = qrCode.GetGraphic(20);
+
+			bit.Save(path);
+
+			return path.Replace("wwwroot", string.Empty);
 		}
 	}
 }

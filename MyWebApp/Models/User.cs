@@ -2,6 +2,7 @@
 using Google.Cloud.Firestore;
 using MyWebApp.Firebase;
 using MyWebApp.Misc;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace MyWebApp.Models
@@ -142,29 +143,48 @@ namespace MyWebApp.Models
 		{
 			try
 			{
-				List<Dictionary<string, object>> objectProperties = new List<Dictionary<string, object>>
+				Dictionary<string, object> objectProperties = new Dictionary<string, object>
 				{
-					new Dictionary<string, object>
-					{
-						{ "condo", selCondo },
-						{ "number", selCondoNumber }
-					}
+					{ "condo", selCondo },
+					{ "number", selCondoNumber }
+				};
+
+				DocumentReference docRef = FirestoreDb.Create(FirebaseAuthHelper.firebaseAppId).Collection("User").Document(uuid);
+				Dictionary<string, object> dataToUpdate = new Dictionary<string, object>
+				{
+					{"name", displayName },
+					{"properties", FieldValue.ArrayUnion(objectProperties) }
+				};
+
+				WriteResult result = await docRef.UpdateAsync(dataToUpdate);
+			}
+			catch
+			{
+
+			}
+		}
+
+		public static async void RemoveCondoFromUser(string uuid, string selCondo, int selCondoNumber)
+		{
+			try
+			{
+				Dictionary<string, object> objectProperties = new Dictionary<string, object>
+				{
+					{ "condo", selCondo },
+					{ "number", selCondoNumber }
 				};
 
 				DocumentReference docRef = FirestoreDb.Create(FirebaseAuthHelper.firebaseAppId).Collection("User").Document(uuid);
 				Dictionary<string, object> dataToUpdate = new Dictionary<string, object>
 				{					
-					{"name", displayName },					
-					{"properties", objectProperties }
+					{"properties", FieldValue.ArrayRemove(objectProperties) }
 				};
 
 				WriteResult result = await docRef.UpdateAsync(dataToUpdate);
-
-				Thread.Sleep(3000);
 			}
 			catch
 			{
-				
+
 			}
 		}
 	}

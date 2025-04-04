@@ -2,12 +2,21 @@
 	ViewData["Title"] = "Create Profile";
 }
 
+@{
+	ViewData["Title"] = "Create Profile";
+}
+
 <div class="container mt-4">
 	<a class="btn btn-primary" asp-area="" asp-controller="Profile" asp-action="Index">Back</a>
 	<hr />
-
-	<div class="text-center">
-		<div class="container mt-5">
+	<nav>
+		<div class="nav nav-tabs" id="nav-tab" role="tablist">
+			<button class="nav-link active" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Owners</button>
+			<button class="nav-link" id="nav-owner-tab" data-bs-toggle="tab" data-bs-target="#nav-owner" type="button" role="tab" aria-controls="nav-owner" aria-selected="true">Add Condo to Owner</button>
+		</div>
+	</nav>
+	<div class="tab-content" id="nav-tabContent">
+		<div class="tab-pane fade show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
 			<div class="row justify-content-center">
 				<div class="col-md-4">
 					<div class="card shadow-lg p-4">
@@ -26,7 +35,7 @@
 							</div>
 							<hr />
 							<div class="mb-3">
-								<select id="selCondo" name="selCondo" class="form-select" aria-label="Select the condominium">									
+								<select id="selCondo" name="selCondo" class="form-select" aria-label="Select the add a condominium">
 									@foreach (var condo in @ViewBag.CondoList)
 									{
 										<option value="@condo.Name" data-count="@condo.Count">@condo.Name</option>
@@ -34,8 +43,7 @@
 								</select>
 							</div>
 							<div class="mb-3">
-								<select id="selCondoNumber" name="selCondoNumber" class="form-select" aria-label="Select the condo number">									
-
+								<select id="selCondoNumber" name="selCondoNumber" class="form-select" aria-label="Select the condo number">
 								</select>
 							</div>
 							<script type="text/javascript">
@@ -62,9 +70,30 @@
 				</div>
 			</div>
 		</div>
+		<div class="tab-pane fade" id="nav-owner" role="tabpanel" aria-labelledby="nav-owner-tab" tabindex="0">
+			<ol class="list-group list-group-numbered">
+				@foreach (var condo in @ViewBag.Owner.Properties)
+				{
+					<form asp-controller="Profile" asp-action="Delete">
+						<input type="hidden" id="txtUuid" name="txtUuid" class="form-control" value="@ViewBag.Owner.uuid" required readonly />
+						<li class="list-group-item d-flex justify-content-between align-items-start">
+							<div class="ms-2 me-auto">
+								<div class="fw-bold">
+								<label type="text" id="selCondo" name="selCondo">@condo.CondoName</label>
+								<input type="hidden" id="selCondo" name="selCondo" value="@condo.CondoName" />
+								</div>
+								Condominium Number:
+							<label type="text" id="selCondoNumber" name="selCondoNumber">@condo.CondoNumber</label>
+							<input type="hidden" id="selCondoNumber" name="selCondoNumber" value="@condo.CondoNumber" />
+							</div>
+							<button type="submit" class="btn btn-danger">Remove</button>
+						</li>
+					</form>
+				}
+			</ol>
+		</div>
 	</div>
 </div>
-
 
 
 

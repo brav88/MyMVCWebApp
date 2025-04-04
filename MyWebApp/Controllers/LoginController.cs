@@ -12,7 +12,7 @@ namespace MyWebApp.Controllers
 	{
 		// GET: LoginController
 		public IActionResult Index()
-		{
+		{			
 			return View();
 		}
 

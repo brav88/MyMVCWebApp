@@ -1,0 +1,17 @@
+﻿@{
+	ViewData["Title"] = "Login Page";
+}
+
+
+<div class="container mt-4">	
+	<form asp-action="Generate" asp-controller="QR">
+		<button type="submit" class="btn btn-primary">Generate QR</button>
+	</form>	
+	<hr />
+	<div class="row justify-content-center">
+		@if (@ViewBag.QRCode != null)
+		{
+			<img src="@ViewBag.QRCode" style="width:42rem;height:38rem">
+		}		
+	</div>
+</div>
